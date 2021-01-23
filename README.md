@@ -468,3 +468,120 @@ A region might have multiple Zones.
 
 >* Google Cloud calls it Zones.
 >* AWS calls it Availability Zones.
+
+Using Kubernetes and Docker with Spring Boot Hello World Rest API
+-
+##### Steps to deploy Spring Boot Hello World Rest API to Kubernetes
+>Install Docker Desktop *(Windows 10 Pro)* or Docker Toolbox *(Windows 10 Home)* in local machine.
+1. We have a service **Hello World Rest API**
+2. We have a **Docker File** in project folder & **Dockerfile Maven Plugin** in pom.xml. Make sure the Repository name and the Image name is properly configured in the plugin in pom.xml.
+3. To build an image: Right click on project -> Run As -> Maven Build -> Type "**clean install -DskipTests**" in Goals textbox and click Run.
+4. Command to run the docker image (Run this command in Docker Terminal)
+```
+docker run -p 8080:8080 rhsb/hello-world-rest-api-kubernetes:0.0.4-SNAPSHOT
+```
+>Explanation: docker run -p portWeNeedToExpose:portWhereApplicationIsRunning dockerRepositoryName/projectName:tagName
+5. Testing the service
+>http://192.168.99.100:8080/hello-world or http://localhost:8080/hello-world
+6. Pushing the Docker Image to [Docker Hub](https://hub.docker.com/)
+>Create an account in [Docker Hub](https://hub.docker.com/)
+>Run the below commands in Docker Terminal
+```
+docker login
+```
+>Enter the username and password (Prompted if not logged in previously).
+```
+docker push rhsb/hello-world-rest-api-kubernetes:0.0.4-SNAPSHOT
+```
+
+*That's it! The Docker Image is successfully pushed to [Docker Hub](https://hub.docker.com/)*
+
+7. Install [GCloud](https://cloud.google.com/sdk/docs/install#windows)
+>* Google Cloud can also be installed as a Docker Image from [Google Cloud SDK - Docker Hub](https://hub.docker.com/r/google/cloud-sdk)
+>* When logging in **next** time, Open Google Cloud SDK Shell in local, type `gcloud auth login`
+>* To set project id, *gcloud config set project PROJECT_ID*
+8. Install [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl-on-windows)
+>There are many ways to install in Windows. We can choose whichever is comfortable.
+
+>To check the version
+```
+kubectl version (In Google Cloud SDK Shell or Docker Terminal)
+```
+>To ensure the version you installed is up-to-date
+```
+kubectl version --client (In Google Cloud SDK Shell or Docker Terminal)
+```
+>In Google Cloud SDK Shell, run the below command to connect to the cluster which is in Google Cloud. This command can be taken from the **Google Cloud Console -> Cluster Page -> Our Cluster -> Connect**.
+```
+gcloud container clusters get-credentials harish-cluster --zone us-central1-a --project woven-arcadia-302411
+```
+>After connecting to the cluster from Google Cloud SDK Shell, check the version again. `kubectl version`
+>***We can see Client Version as well as Server Version***
+
+>*The interesting thing about connecting from Local (Google Cloud SDK Shell) is the fact that
+it gives a **lot more flexibility when compared to the Cloud Shell that is in Google Cloud UI**.
+We can create files more easily in Local and put them in version control much more easily.*
+
+9. Deploying Hello World Rest API to Kubernetes
+>- We already deployed this service from Google Cloud Console itself.
+>- Hence, updating the existing deployment with a new version of the service using the below command.
+```
+kubectl set image deployment hello-world-rest-api hello-world-rest-api=rhsb/hello-world-rest-api-kubernetes:0.0.4-SNAPSHOT
+```
+>Explanation for the above command: kubectl set image deployment <deployment-name> <container-name>=<new-image-name>
+
+##### To view the history of deployment
+```
+kubectl rollout history deployment <deployment-name>
+```
+```
+kubectl rollout history deployment hello-world-rest-api
+```
+>By checking the rollout history, we can see the revisions, but the CHANGE-CAUSE will be <none>.
+To set the CHANGE_CAUSE, we can add ***--record*** in the command while creating/updating a deployment.
+By adding --record, the **command used to update the deployment will be set to CHANGE-CAUSE**.
+```
+kubectl set image deployment <deployment-name> <container-name>=<new-image-name> --record
+```
+```
+kubectl set image deployment hello-world-rest-api hello-world-rest-api=rhsb/hello-world-rest-api-kubernetes:0.0.4-SNAPSHOT --record
+```
+##### To check the status of deployment
+```
+kubectl rollout status deployment <deployment-name>
+```
+```
+kubectl rollout status deployment hello-world-rest-api
+```
+##### To undo the deployment
+```
+kubectl rollout undo deployment <deployment-name> --to-revision=revisionNumber
+```
+```
+kubectl rollout undo deployment hello-world-rest-api --to-revision=3
+```
+>We can also pause/unpause the deployments.
+##### To see the Pod logs
+```
+kubectl logs podId
+```
+```
+kubectl logs hello-world-rest-api-58dc9d7fcc-2fw9n
+```
+```
+To follow the logs: kubectl logs podId -f
+```
+```
+kubectl logs hello-world-rest-api-58dc9d7fcc-2fw9n -f
+```
+##### Watch command
+>*This command is used to execute a specific url in specific interval. For example: Every 2 seconds.
+>*To execute this command in Local, we have to install watch for our respective OS.
+>*Cloud Shell that is in **Google Cloud Console UI has watch installed already**
+```
+watch curl URL
+```
+```
+watch curl http://35.188.59.125:8080/hello-world
+```
+>We can watch logs `kubectl logs podId` and observe the logs when *watch command* continuously hits the URL. 
