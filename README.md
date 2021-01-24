@@ -121,11 +121,11 @@ Saving the Free Credits in Google Cloud:
 > After finishing your work you can reduce cluster node size to zero.
 ##### Resizing the number of nodes to 0
 ```
-gcloud container clusters resize --zone <name_of_zone> <name_of_your_cluster> --num-nodes=0
+gcloud container clusters resize --zone name_of_zone name_of_your_cluster --num-nodes=0
 ```
 ##### When you are ready to start again, increase the number of nodes
 ```
-gcloud container clusters resize --zone <name_of_zone> <name_of_your_cluster> --num-nodes=3
+gcloud container clusters resize --zone name_of_zone name_of_your_cluster --num-nodes=3
 ```
 ##### Example:
 ```
@@ -229,7 +229,7 @@ Understanding Deployment in Kubernetes:
 - We need to deploy V2 version.
 - We need Zero Downtime deployment.
 ```
-To deploy a new version: kubectl set image deployment <deployment-name> <container-name>=<new-image-name>
+To deploy a new version: kubectl set image deployment deployment-name container-name=new-image-name
 ```
 ```
 kubectl set image deployment hello-world-rest-api hello-world-rest-api=DUMMY_IMAGE:TEST
@@ -471,7 +471,7 @@ A region might have multiple Zones.
 
 Using Kubernetes and Docker with Spring Boot Hello World Rest API
 -
-##### Steps to deploy Spring Boot Hello World Rest API to Kubernetes
+### Steps to deploy Spring Boot Hello World Rest API to Kubernetes
 >Install Docker Desktop *(Windows 10 Pro)* or Docker Toolbox *(Windows 10 Home)* in local machine.
 1. We have a service **Hello World Rest API**
 2. We have a **Docker File** in project folder & **Dockerfile Maven Plugin** in pom.xml. Make sure the Repository name and the Image name is properly configured in the plugin in pom.xml.
@@ -497,8 +497,9 @@ docker push rhsb/hello-world-rest-api-kubernetes:0.0.4-SNAPSHOT
 *That's it! The Docker Image is successfully pushed to [Docker Hub](https://hub.docker.com/)*
 
 7. Install [GCloud](https://cloud.google.com/sdk/docs/install#windows)
->* Google Cloud can also be installed as a Docker Image from [Google Cloud SDK - Docker Hub](https://hub.docker.com/r/google/cloud-sdk)
->* When logging in **next** time, Open Google Cloud SDK Shell in local, type `gcloud auth login`
+>* Google Cloud can also be installed as a Docker Image from [Google Cloud SDK - Docker Hub](https://hub.docker.com/r/google/cloud-sdk) or [Google Cloud SDK - Google Container Registry](https://cloud.google.com/sdk/docs/downloads-docker)
+>* ***Google Cloud SDK Shell*** and ***Cloud Tools for PowerShell*** will be installed.
+>* When logging in **next** time, Open *Google Cloud SDK Shell* or *Cloud Tools for PowerShell* in local, type `gcloud auth login`
 >* To set project id, *gcloud config set project PROJECT_ID*
 8. Install [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl-on-windows)
 >There are many ways to install in Windows. We can choose whichever is comfortable.
@@ -528,34 +529,34 @@ We can create files more easily in Local and put them in version control much mo
 ```
 kubectl set image deployment hello-world-rest-api hello-world-rest-api=rhsb/hello-world-rest-api-kubernetes:0.0.4-SNAPSHOT
 ```
->Explanation for the above command: kubectl set image deployment <deployment-name> <container-name>=<new-image-name>
+>Explanation for the above command: kubectl set image deployment deployment-name container-name=new-image-name
 
 ##### To view the history of deployment
 ```
-kubectl rollout history deployment <deployment-name>
+kubectl rollout history deployment deployment-name
 ```
 ```
 kubectl rollout history deployment hello-world-rest-api
 ```
 >By checking the rollout history, we can see the revisions, but the CHANGE-CAUSE will be <none>.
-To set the CHANGE_CAUSE, we can add ***--record*** in the command while creating/updating a deployment.
+To set the CHANGE-CAUSE, we can add ***--record*** in the command while creating/updating a deployment.
 By adding --record, the **command used to update the deployment will be set to CHANGE-CAUSE**.
 ```
-kubectl set image deployment <deployment-name> <container-name>=<new-image-name> --record
+kubectl set image deployment deployment-name container-name=new-image-name --record
 ```
 ```
 kubectl set image deployment hello-world-rest-api hello-world-rest-api=rhsb/hello-world-rest-api-kubernetes:0.0.4-SNAPSHOT --record
 ```
 ##### To check the status of deployment
 ```
-kubectl rollout status deployment <deployment-name>
+kubectl rollout status deployment deployment-name
 ```
 ```
 kubectl rollout status deployment hello-world-rest-api
 ```
 ##### To undo the deployment
 ```
-kubectl rollout undo deployment <deployment-name> --to-revision=revisionNumber
+kubectl rollout undo deployment deployment-name --to-revision=revisionNumber
 ```
 ```
 kubectl rollout undo deployment hello-world-rest-api --to-revision=3
@@ -575,13 +576,119 @@ To follow the logs: kubectl logs podId -f
 kubectl logs hello-world-rest-api-58dc9d7fcc-2fw9n -f
 ```
 ##### Watch command
->*This command is used to execute a specific url in specific interval. For example: Every 2 seconds.
->*To execute this command in Local, we have to install watch for our respective OS.
->*Cloud Shell that is in **Google Cloud Console UI has watch installed already**
+>- This command is used to execute a specific url in specific interval. For example: Every 2 seconds.
+>- To execute this command in Local, we have to install watch for our respective OS.
+>- Cloud Shell that is in **Google Cloud Console UI has watch installed already**
 ```
 watch curl URL
 ```
 ```
 watch curl http://35.188.59.125:8080/hello-world
 ```
->We can watch logs `kubectl logs podId` and observe the logs when *watch command* continuously hits the URL. 
+>We can watch logs `kubectl logs podId` and observe the logs when *watch command* continuously hits the URL.
+
+Generating Kubernetes YAML Configuration for Deployment and Service
+-
+* Till now, we were executing kubectl commands to create deployment, check logs and many more.
+* However Kubernetes supports a YAML format to define deployments, services, etc.
+
+>In real world projects, we will be using YAML files to create deployments, services, etc.
+
+##### To view the deployment
+```
+kubectl get deployment deployment-name
+```
+```
+kubectl get deployment hello-world-rest-api
+```
+To view some more details
+```
+kubectl get deployment deployment-name -o wide
+```
+```
+kubectl get deployment hello-world-rest-api -o wide
+```
+
+##### To view the YAML file from the deployment
+```
+kubectl get deployment deployment-name -o yaml
+```
+```
+kubectl get deployment hello-world-rest-api -o yaml
+```
+>This YAML file will have details such as *label name, image name, replicas, status* etc.
+
+##### Copying the YAML file to a Local file
+>- Navigate to the project folder and run the below commands so that the YAML files will be created inside the project.
+>- If navigation not working from ***Google Cloud SDK Shell***, try navigating from ***Cloud Tools for PowerShell***
+>- Both *Google Cloud SDK Shell* and *Cloud Tools for PowerShell* will be installed while installing Google Cloud.
+```
+kubectl get deployment deployment-name -o yaml > deployment.yaml
+```
+```
+kubectl get deployment hello-world-rest-api -o yaml > deployment.yaml
+```
+##### Getting the information of expose command
+>- `kubectl get deployment deployment-name -o yaml` command is used to view the information **when we create a deployment**.
+>- `kubectl get service deployment-name -o yaml` command is used to view the information **after we expose the deployment**.
+
+>- Navigate to the project folder and run the below commands so that the YAML files will be created inside the project.
+>- If navigation not working from ***Google Cloud SDK Shell***, try navigating from ***Cloud Tools for PowerShell***
+>- Both *Google Cloud SDK Shell* and *Cloud Tools for PowerShell* will be installed while installing Google Cloud.
+```
+kubectl get service service-name -o yaml
+```
+```
+kubectl get service hello-world-rest-api -o yaml
+```
+##### Copying the YAML file to a Local fileCopying it to a local file
+```
+kubectl get service hello-world-rest-api -o yaml > service.yaml
+```
+##### Updating the deployment by updating the YAML files.
+```
+kubectl apply -f yaml-file-name.yaml
+```
+```
+kubectl apply -f deployment.yaml
+```
+- For example, in deployment.yaml file, we changed replicas from 3 to 2.
+- By running the above command, the deployment will be updated and there will be only 2 replicas and not 3.
+- Instead of running kubectl commands directly to update, we can change the configuration in YAML files.
+
+---
+
+Improving Kubernetes YAML Configuration
+-
+
+- Now, we have *deployment.yaml and service.yaml* files in the project folder.
+- We can ***combine both the files*** into a single file.
+
+>- Copy the contents of *service.yaml* file and paste it in *deployment.yaml*
+>- *service.yaml* file can be deleted.
+
+- Removing few configurations from YAML files that aren't needed
+>- I have added ***deployment_backup.yaml*** and ***service_backup.yaml*** for reference (If needed)
+>- Backups are also available in ***backup*** folder in the project.
+
+##### To delete a resource using label name
+> The label name will be configured in the YAML file.
+```
+kubectl delete all -l app=hello-world-rest-api
+```
+##### Creating a deployment from Local after deleting the existing deployment
+- Now, that we have combined deployment.yaml and service.yaml into 1 file (deployment.yaml),
+we can execute the below command
+> Make sure we are inside project folder while executing the commands.
+```
+kubectl apply -f deployment.yaml
+```
+
+##### To get information about all the resources (Pods, Service, Deployment, Replicaset)
+```
+kubectl get all
+```
+##### Hitting the service from Google Cloud Shell SDK or Cloud Tools for PowerShell from Local machine
+```
+curl 35.188.59.125:8080/hello-world
+```
