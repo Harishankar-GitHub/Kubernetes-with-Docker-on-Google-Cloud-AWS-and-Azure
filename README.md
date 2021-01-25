@@ -585,6 +585,10 @@ watch curl URL
 ```
 watch curl http://35.188.59.125:8080/hello-world
 ```
+* Specifying the interval in the command. The below command will hit the service every 0.1 seconds.
+```
+watch -n 0.1 curl http://35.188.59.125:8080/hello-world
+```
 >We can watch logs `kubectl logs podId` and observe the logs when *watch command* continuously hits the URL.
 
 Generating Kubernetes YAML Configuration for Deployment and Service
@@ -691,4 +695,33 @@ kubectl get all
 ##### Hitting the service from Google Cloud Shell SDK or Cloud Tools for PowerShell from Local machine
 ```
 curl 35.188.59.125:8080/hello-world
+```
+
+---
+
+Playing with Declarative Configuration for Kubernetes
+-
+##### Understanding Kubernetes YAML Configuration - Labels and Selectors
++ On a high level, 4 important sections of a YAML file are
+	- ApiVersion
+	- Kind
+	- MetaData
+	- Spec
+
+* `apiVersion:` will have the version details
+* `kind:` deployment or service etc.
+* `metadata:` label, name, namespace etc.
+* `spec:` definitions of a deployment
+> One of the important definition inside spec is *definition of pod*
+
+##### Reducing release downtime with minReadySeconds
+>* We can add minReadySeconds: 45 in the YAML file under *spec* section.
+>* The application will take few seconds to start. That's why adding 45 seconds.
+
+> Adding minReadySeconds is a quick fix. The perfect solution would be to add readiness and liveliness
+probes.
+
+* Command to see the difference between existing YAML file and a modified YAML file
+```
+kubectl diff -f deployment.yaml
 ```
