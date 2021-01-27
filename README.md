@@ -576,6 +576,9 @@ To follow the logs: kubectl logs podId -f
 kubectl logs hello-world-rest-api-58dc9d7fcc-2fw9n -f
 ```
 ##### Watch command
+
+###### :worried::anguished: ***Watch command is not supported on Windows*** :worried::anguished:
+
 >- This command is used to execute a specific url in specific interval. For example: Every 2 seconds.
 >- To execute this command in Local, we have to install watch for our respective OS.
 >- Cloud Shell that is in **Google Cloud Console UI has watch installed already**
@@ -684,6 +687,8 @@ kubectl delete all -l app=hello-world-rest-api
 - Now, that we have combined deployment.yaml and service.yaml into 1 file (deployment.yaml),
 we can execute the below command
 > Make sure we are inside project folder while executing the commands.
+
+>* NOTE: *After combining ***deployment.yaml*** and ***service.yaml***, a backup of the file is available under Backup folder (***deployment-01-after-cleanup.yaml***)*
 ```
 kubectl apply -f deployment.yaml
 ```
@@ -722,6 +727,57 @@ Playing with Declarative Configuration for Kubernetes
 probes.
 
 * Command to see the difference between existing YAML file and a modified YAML file
+###### :worried::anguished: ***diff command is not supported on Windows*** :worried::anguished:
 ```
 kubectl diff -f deployment.yaml
 ```
+
+##### Understanding Replica Sets in Depth - Using Kubernetes YAML Config
+* Replicasets can live on their own without a deployment.
+* We can directly attach the pods created by a replicaset to the service
+
+> Changing `kind: Deployment` to `kind: ReplicaSet` in deployment.yaml file.
+
+* **Deployment** is *responsible for new releases*.
+* **ReplicaSet** is *only responsible for ensuring that specific pods are running*.
+	+ Replicaset does not know anything about Strategy. Hence commenting it in YAML file.
+
+To create a service, we don't need deployments.
+All we need is Pods.
+The service is directly attached to the pods using labels of the pods.
+And the ReplicaSet is attached to the pod.
+
+>* When we change the image name or version and run `kubectl apply -f deployment.yaml` command,
+the updated pods won't start/run.
+>* This is because, ReplicaSet just ensures specific pods are up and running.
+>* When we delete a pod, then new pod will come up which will contain the updated image.
+
+***That's why we use deployments.*** When we create a deployment, it creates replicaset and pods.
+
+> NOTE: *The backup of the ***deployment.yaml*** file is under Backup folder (***deployment-02-using-replica-set.yaml***).*
+
+##### Configure Multiple Kubernetes Deployments with One Service
+
+- Modified the **deployment.yaml**: Added 1 more deployment configuration (Now we have 2 deployment configuration)
+- Service configuration remain unchanged.
+
+After this, run
+```
+kubectl apply -f deployment.yaml
+```
+
+>* 2 deployments will be created
+>* 2 pods of V1 and 2 pods of V2 will be up and running.
+
+- Run `kubectl get all'  to see what resources are newly created.
+- Run `kubectl get all -o wide'  to see **more details*	* what resources are newly created.
+
+>* Now if we hit the service, the load will be distributed to V1 and V2 pods.
+
+###### How can we send the load only to a specific deployment ?
+
+- As of now, the configuration of service in the deployment.yaml file has only 1 label (*app: hello-world-rest-api*)
+- It doesn't have *version: v1* or *version: v2*.
+- If we specify v1 or v2 in the ***selector section*** of the service configuration, **the load will be sent only to that specific pods**.
+
+
