@@ -780,4 +780,7 @@ kubectl apply -f deployment.yaml
 - It doesn't have *version: v1* or *version: v2*.
 - If we specify v1 or v2 in the ***selector section*** of the service configuration, **the load will be sent only to that specific pods**.
 
+Using Kubernetes and Docker with Java Spring Boot Todo Web Application
+-
+### Steps to deploy Spring Boot Todo Web Application to Kubernetes
 
