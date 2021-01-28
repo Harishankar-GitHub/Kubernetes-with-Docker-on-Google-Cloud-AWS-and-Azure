@@ -783,4 +783,17 @@ kubectl apply -f deployment.yaml
 Using Kubernetes and Docker with Java Spring Boot Todo Web Application
 -
 ### Steps to deploy Spring Boot Todo Web Application to Kubernetes
+1. We have a service **Spring Boot Todo Web Application**
+2. We have a **Docker File** in project folder & **Dockerfile Maven Plugin** in pom.xml. Make sure the Repository name and the Image name is properly configured in the plugin in pom.xml.
+3. To build an image: Right click on project -> Run As -> Maven Build -> Type "**clean package**" in Goals textbox and click Run.
+4. Now, we have a ***.war*** file generated.
+5. Created a ***deployment.yaml*** file similar to ***hello-world-rest-api*** service and modified accordingly to deploy ***Todo Web Application***.
+>-   Backup of deployment.yaml file is also available in  _**backup**_  folder in the project.
+
+6. Push the image to [Docker Hub](https://hub.docker.com/)
+7. After this, we can deploy using
+```
+kubectl apply -f deployment.yaml
+```
+### :innocent::wink: The application is up and running in Kubernetes! :innocent::wink:
 
