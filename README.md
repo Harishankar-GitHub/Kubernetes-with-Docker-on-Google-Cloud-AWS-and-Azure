@@ -797,3 +797,58 @@ kubectl apply -f deployment.yaml
 ```
 ### :innocent::wink: The application is up and running in Kubernetes! :innocent::wink:
 
+Playing with Kubernetes Commands - Top Node and Pod
+-
+- To get all details
+```
+kubectl get all
+```
+- To get all namespaces
+```
+kubectl get pods --all-namespaces
+```
+- Passing a filter based on a label on `kubectl get` command
+```
+kubectl get pods -l app=todo-web-application-h2
+```
+```
+kubectl get pods -l app=todo-web-application-h2 --all-namespaces
+```
+- To get all namespaces of services
+```
+kubectl get services --all-namespaces
+```
+- Sorting based on a column
+> The output of `kubectl get services --all-namespaces` will have columns such as NAMESPACE, NAME, TYPE, PORTS etc.
+If we need to sort the output based on TYPE, we can use the below command.
+```
+kubectl get services --all-namespaces --sort-by=.spec.type
+```
+>- `.spec.type` is formed based on deployment.yaml file.
+>- In deployment.yaml file, inside *spec:* section *type:* is defined. So, `--sort-by=.spec.type`
+- To see cluster info
+```
+kubectl cluster-info
+```
+> To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+- To see top nodes
+```
+kubectl top node
+```
+> This command lists down the nodes based on the CPU and Memory utilization
+- To see the top pods
+```
+kubectl top pod
+```
+> This command lists down the pods based on the CPU and Memory utilization
+
+##### Few shortcuts
+
+- `kubectl get services` -> `kubectl get svc`
+- `kubectl get events` -> `kubectl get ev`
+- `kubectl get replicasets` -> `kubectl get rs`
+- `kubectl get namespaces` -> `kubectl get ns`
+- `kubectl get nodes` -> `kubectl get no`
+- `kubectl get pods` -> `kubectl get po`
+
+# :wink: [Kubernetes (kubectl) Cheet Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/) :wink:
