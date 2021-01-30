@@ -786,7 +786,7 @@ Using Kubernetes and Docker with Java Spring Boot Todo Web Application
 1. We have a service **Spring Boot Todo Web Application**
 2. We have a **Docker File** in project folder & **Dockerfile Maven Plugin** in pom.xml. Make sure the Repository name and the Image name is properly configured in the plugin in pom.xml.
 3. To build an image: Right click on project -> Run As -> Maven Build -> Type "**clean package**" in Goals textbox and click Run.
-4. Now, we have a ***.war*** file generated.
+4. Now, we have an ***image*** and a ***.war*** file generated.
 5. Created a ***deployment.yaml*** file similar to ***hello-world-rest-api*** service and modified accordingly to deploy ***Todo Web Application***.
 >-   Backup of deployment.yaml file is also available in  _**backup**_  folder in the project.
 
@@ -852,3 +852,58 @@ kubectl top pod
 - `kubectl get pods` -> `kubectl get po`
 
 # :wink: [Kubernetes (kubectl) Cheet Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/) :wink:
+
+Using Kubernetes and Docker with Java Todo Web Application using MySQL
+-
+### Steps to deploy Spring Boot Todo Web Application to Kubernetes
+1. We have a service **Spring Boot Todo Web Application using MySQL**
+2. This service uses MySQL Database. We can use MySQL image from [Docker Hub](https://hub.docker.com/_/mysql) instead of manually installing and configuring MySQL Database.
+- Command to pull, configure and run MySQL Database in our local.
+```
+docker run -d -e MYSQL_ROOT_PASSWORD=dummy -e MYSQL_DATABASE=todos -e MYSQL_USER=todos-user -e MYSQL_PASSWORD=dummy --name mysql -p 3306:3306 mysql:5.7
+```
+3. We need [MySql Shell](https://dev.mysql.com/downloads/shell/) to connect to the MySQL Database that is running as a Docker Image.
+>* While installing if we get an error like *vcruntime140_1.dll* is missing,
+	we need to download the file from google and keep it in mysqlsh.exe path.
+>- Once MySql Shell is downloaded and installed, double click on mysqlsh.exe file to open MySql Shell.
+>* *To connect to database*, type `\connect todos-user@localhost:3306` or `\connect todos-user@192.168.99.100:3306`
+```
+\connect MYSQL_USER@localhost:PortNumber of MySql which is running in docker.
+```
+> **Note:** Default port of MySql is 3306
+- After connecting MySql Docker Image from MySql Shell, we can use the below commands to work.
+	+ `\sql` - Switching to SQL mode
+	+ `use databaseName` - To work on a particular database
+	+ After this, we can execute queries like this. `select * from tableName;`
+
+* Now, if we start the application, it will be connected to the MySQL Database.
+* We can execute few queries to check if it works properly.
+4. We have a **Docker File** in project folder & **Dockerfile Maven Plugin** in pom.xml. Make sure the Repository name and the Image name is properly configured in the plugin in pom.xml.
+5. To build an image: Right click on project -> Run As -> Maven Build -> Type "**clean install**" in Goals textbox and click Run.
+6. Now, we have an ***image*** and a ***.war*** file generated.
+7. We need to connect and run the ***Web Application Docker Image*** with the ***MySQL Docker Image***.
+```
+docker run -d -p 8080:8080 --link=mysql rhsb/todo-web-application-mysql-kubernetes:0.0.1-SNAPSHOT
+```
+>- `--link=mysql` used to connect Web Application with MySql
+>- **Note:** `--link` is deprecated.
+
+##### A better alternative to --link is to launch both the applications into a custom docker network
+* Commands:
+```
+docker network ls
+docker network create web-application-mysql-network
+docker inspect web-application-mysql-network
+docker run --detach --env MYSQL_ROOT_PASSWORD=dummy --env MYSQL_USER=todos-user --env MYSQL_PASSWORD=dummy --env MYSQL_DATABASE=todos --name mysql --publish 3306:3306 --network=web-application-mysql-network mysql:5.7
+docker inspect web-application-mysql-network
+```
+8. Instead of running multiple commands to run multiple applications/databases etc., we can combine all the configurations into 1 file (***docker-compose.yml***).
+##### Docker Compose
+- Docker Compose is used to ***launch up multiple containers*** at a time/simultaneously. It is ***also used to associate resources/volumes, network etc.***
+-   Documentation:  [Docker Compose](https://docs.docker.com/compose/)
+- To check the docker-compose version ***`docker-compose -version`***
+- Docker Compose is preinstalled in Docker Desktop. If not available, it can be installed from [here](https://docs.docker.com/compose/)
+9. Created a  ***docker-compose.yaml*** which has configurations to run Web Application and the Database.
+* To run *docker-compose.yaml*
+	+ cd to the project folder where *docker-compose.yaml* is present.
+	+ Run ***`docker-compose up`*** in Docker Terminal
