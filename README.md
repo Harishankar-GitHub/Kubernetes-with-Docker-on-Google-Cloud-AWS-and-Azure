@@ -907,3 +907,16 @@ docker inspect web-application-mysql-network
 * To run *docker-compose.yaml*
 	+ cd to the project folder where *docker-compose.yaml* is present.
 	+ Run ***`docker-compose up`*** in Docker Terminal
+10. Now that we have created *docker-compose.yml* file, we need to create *deployment.yaml* file to deploy the application to Kubernetes.
+* We can convert *docker-compose.yml* file to *deployment.yaml* file using a tool called [Kompose](https://kompose.io/installation/)
+* Easy way to install [***Kompose***](https://kompose.io/installation/) is via [***Chocolatey***](https://chocolatey.org/install)
+	+ In Windows PowerShell *(Run as Administrator)* run the command to install [Chocolatey](https://chocolatey.org/install).
+	+ Once Chocolatey is installed, we can install Kompose from this [link](https://kompose.io/installation/)
+	+ There are many ways to install Kompose. I installed using Chocolatey.
+	+ The command is `choco install kubernetes-kompose`
+
+##### Converting docker-compose.yml to Kubernetes Deployment YAML files
+- In Windows PowerShell, cd to the project folder where docker-compose.yml file is present.
+- Run `kompose convert`
+- Kubernetes Deployment YAML files will be created!
+11. We can modify/remove few configurations from the Kubernetes YAML files.
