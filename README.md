@@ -920,3 +920,14 @@ docker inspect web-application-mysql-network
 - Run `kompose convert`
 - Kubernetes Deployment YAML files will be created!
 11. We can modify/remove few configurations from the Kubernetes YAML files.
+12. Now we are ready to deploy this application to Kubernetes.
+- Deploying MySQL to Kubernetes
+```
+kubectl apply -f mysql-database-data-volume-persistentvolumeclaim.yaml,mysql-deployment.yaml,mysql-service.yaml
+```
+> After deploying, we can check the details using `kubectl get all` and `kubectl get service --watch`
+- Deploying Web Application to Kubernetes
+```
+kubectl apply -f todo-web-application-deployment.yaml,todo-web-application-service.yaml
+```
+> After deploying, we can check the details using `kubectl get all` and `kubectl get service --watch`
