@@ -931,3 +931,20 @@ kubectl apply -f mysql-database-data-volume-persistentvolumeclaim.yaml,mysql-dep
 kubectl apply -f todo-web-application-deployment.yaml,todo-web-application-service.yaml
 ```
 > After deploying, we can check the details using `kubectl get all` and `kubectl get service --watch`
+
+### :innocent::wink: The application is up and running in Kubernetes! :innocent::wink:
+
+Understanding Persistent Storage with Kubernetes
+-
+- To get Persistent Volume
+```
+kubectl get pv
+```
+- To get Persistent Volume Claim
+```
+kubectl get pvc
+```
+- In terms of Kubernetes Cluster, ***any kind of storage is called as Volume***.
+- Different Cloud Providers provide different Storage Solutions such as ***AWS Elastic Block Storage***, ***GCE Persistent Disk (Google Compute Engine Persistent Disk)*** etc.
+- A ***Persistent Volume*** is how we map an external storage to our cluster.
+- A ***Persistent Volume Claim*** is how a pod can ask for the Persistent Volume.
