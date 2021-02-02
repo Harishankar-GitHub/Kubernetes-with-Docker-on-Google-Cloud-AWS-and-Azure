@@ -948,3 +948,42 @@ kubectl get pvc
 - Different Cloud Providers provide different Storage Solutions such as ***AWS Elastic Block Storage***, ***GCE Persistent Disk (Google Compute Engine Persistent Disk)*** etc.
 - A ***Persistent Volume*** is how we map an external storage to our cluster.
 - A ***Persistent Volume Claim*** is how a pod can ask for the Persistent Volume.
+
+Using Config Maps for Centralized Configuration
+-
+##### Creating ConfigMap
+- Creating a ConfigMap with the values in Todo Web Application with MySQL
+```
+kubectl create configmap todo-web-application-config --from-literal=RDS_DB_NAME=todos
+```
+- A ConfigMap is created  which has *RDS_DB_NAME* and its value.
+
+##### Viewing the ConfigMap
+```
+kubectl get configmap
+kubectl get configmap todo-web-application-config
+kubectl get configmap/todo-web-application-config
+```
+##### Describe ConfigMap
+```
+kubectl describe configmap
+kubectl describe configmap todo-web-application-config
+kubectl describe configmap/todo-web-application-config
+```
+- Now we have created a ConfigMap. We can modify the deployment.yaml files to use the value from ConfigMap. ***(Refer deployment.yaml files for code changes)***
+- After modifying deployment.yaml files, we can use `kubectl apply -f todo-web-application-deployment.yaml` to update the deployment.
+
+##### Adding all configurations to ConfigMap
+- Instead of adding variables one by one to the ConfigMap, we can open the ConfigMap and edit there.
+> ***Note: If any issues while editing the ConfigMap in local machine, we can open Cloud Shell from Google Cloud Console UI and edit from there !!*** :wink:
+
+* Once the ConfigMap is edited, we can restart the pods by deleting the pods (By deleting, new pods will come up) or by using the below command.
+> Scale down
+```
+kubectl scale deployment todo-web-application --replicas=0
+```
+> Scale up
+```
+kubectl scale deployment todo-web-application --replicas=1
+```
+---
