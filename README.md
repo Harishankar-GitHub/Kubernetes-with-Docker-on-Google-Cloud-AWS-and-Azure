@@ -987,3 +987,20 @@ kubectl scale deployment todo-web-application --replicas=0
 kubectl scale deployment todo-web-application --replicas=1
 ```
 ---
+
+Using Secrets with Kubernetes
+-
+##### Creating Secrets
+```
+kubectl create secrets generic todo-web-application-secrets --from-literal=RDS_PASSWORD=dummy
+```
+##### Viewing Secrets
+```
+kubectl get secret/todo-web-application-secrets
+```
+##### Describe Secrets
+```
+kubectl describe secret/todo-web-application-secrets
+```
+- Now we have created Secrets. We can modify the deployment.yaml files to use the value from Secrets. ***(Refer deployment.yaml files for code changes)***
+- After modifying deployment.yaml files, we can use `kubectl apply -f todo-web-application-deployment.yaml` to update the deployment.
