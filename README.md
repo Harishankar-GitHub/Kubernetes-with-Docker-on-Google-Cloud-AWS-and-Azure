@@ -970,6 +970,11 @@ kubectl describe configmap
 kubectl describe configmap todo-web-application-config
 kubectl describe configmap/todo-web-application-config
 ```
+##### Deleting ConfigMap
+```
+kubectl delete configmap/todo-web-application-config
+kubectl delete configmap todo-web-application-config
+```
 - Now we have created a ConfigMap. We can modify the deployment.yaml files to use the value from ConfigMap. ***(Refer deployment.yaml files for code changes)***
 - After modifying deployment.yaml files, we can use `kubectl apply -f todo-web-application-deployment.yaml` to update the deployment.
 
@@ -1002,5 +1007,42 @@ kubectl get secret/todo-web-application-secrets
 ```
 kubectl describe secret/todo-web-application-secrets
 ```
+##### Deleting Secrets
+```
+kubectl delete secret/todo-web-application-secrets
+kubectl delete secret todo-web-application-secrets
+```
 - Now we have created Secrets. We can modify the deployment.yaml files to use the value from Secrets. ***(Refer deployment.yaml files for code changes)***
 - After modifying deployment.yaml files, we can use `kubectl apply -f todo-web-application-deployment.yaml` to update the deployment.
+
+Creating a ClusterIP Kubernetes Service for MySQL Database
+-
+- As of now we have deployed ***MySQL Database as a LoadBalancer***.
+- LoadBalancer can be accessed by all. For a UI application it is fine. But a *Database need not be accessible to everyone*.
+- That's why we deploy ***MySQL Database as a ClusterIP***.
+- We can just modify the YAML files and update the deployment. But as of today, there're some issues while updating YAML files as ClusterIP and deploying.
+- So, we can delete the MySQL service and deploy the same after modifying the YAML files.
+- Command to delete a Service
+```
+kubectl delete service mysql
+```
+- After deleting the service, we modify *mysql-service.yaml* file to deploy as ClusterIP. ***(Refer mysql-service.yaml files for code changes)***
+- Update the deployment
+```
+kubectl apply -f mysql-service.yaml
+```
+- To check if a ***ClusterIP*** is assigned
+```
+kubectl get services
+```
+
+##### Deleting the service from GCP
+- Deleting by .yaml files
+```
+kubectl delete -f mysql-database-data-volume-persistentvolumeclaim.yaml,mysql-deployment.yaml,mysql-service.yaml,todo-web-application-deployment.yaml,todo-web-application-service.yaml
+```
+- Deleting by label name
+```
+kubectl delete all -l app=todo-web-application
+```
+Any of the above methods can be used to delete a service/deployment completely.
