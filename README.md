@@ -1046,3 +1046,29 @@ kubectl delete -f mysql-database-data-volume-persistentvolumeclaim.yaml,mysql-de
 kubectl delete all -l app=todo-web-application
 ```
 Any of the above methods can be used to delete a service/deployment completely.
+
+Deploying Spring Boot Microservices Applications to Kubernetes
+-
+#### Few Microservices definitions
+- Small Autonomous Services that work together
+- Independently deployable small services by automated deployment
+- Developing a single application as a suite of small services each running its own process and communicating with light weight mechanisms and has centralized management of these services.
+#### Important parts of Microservices Applications
+- REST
+- Small deployable units
+- Cloud enabled
+#### Advantages of Microservices
+- Easy to adapt New Technologies and processes.
+- Dynamic Scaling
+- Faster Release Cycles
+#### Challenges in Microservices
+- Bounded Context
+	+ Deciding what to do and what not to do in Microservices Applicatiions.
+	+ Deciding the boundary of Microservices is an evolutionary process.
+- Configuration Management
+	+ Might be difficult to manage if the configuration is huge.
+- Dynamic Scale Up and Scale Down
+- Visibility
+	+ If there's a bug, we need to find out the root cause. And that might be little difficult when there are lot of Microservices.
+- Pack of Cards
+	+ If there a situation like, If one microservice goes down, all other microservices which depend on that also go down. In this case, we need Fault Tolerance in microservices.
