@@ -1072,3 +1072,19 @@ Deploying Spring Boot Microservices Applications to Kubernetes
 	+ If there's a bug, we need to find out the root cause. And that might be little difficult when there are lot of Microservices.
 - Pack of Cards
 	+ If there a situation like, If one microservice goes down, all other microservices which depend on that also go down. In this case, we need Fault Tolerance in microservices.
+	
+#### Deploying Currency Exchange and Currency Conversion services to Kubernetes
+>- As usual, we have Dockerfile and Dockerfile Maven Plugin in the services.
+>- To build an image: Right click on project -> Run As -> Maven Build -> Type "**clean install**" in Goals textbox and click Run.
+>- If working, in docker terminal also we can run `mvn clean install` to build image.
+>- Now the images are created for Currency Exchange and Currency Conversion services.
+>- The images are pushed to [Docker Hub](https://hub.docker.com/) so that we can use the image name in the Kubernetes YAML files during deployment.
+##### Liveness Probe
+- Refer YAML file for the code.
+- To check the health of the pod, it hits the root / of the application in a specific interval and checks if it gets proper response. If proper response is not got for n times, then it marks pod as unhealthy.
+##### Readiness Probe
+- Refer YAML file for the code.
+- After a deployment, it waits for minReadySeconds. After that, it hits the root / of the application in a specific interval and checks if it gets proper response.
+- Only after it gets proper response from the pod, it distributes the load to that pod. Until that, it would wait.
+##### Deploying to Kubernetes
+- As usual, we can use `kubectl apply -f deployment.yaml` to deploy.
