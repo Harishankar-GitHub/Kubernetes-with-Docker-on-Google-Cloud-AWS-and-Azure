@@ -49,4 +49,5 @@ spec:
   selector:
     app: currency-conversion
   sessionAffinity: None #CHANGE
-  type: LoadBalancer
+#  type: LoadBalancer # Commenting LoadBalancer and deploying as NodePort as we created Ingress.
+  type: NodePort

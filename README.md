@@ -1088,3 +1088,40 @@ Deploying Spring Boot Microservices Applications to Kubernetes
 - Only after it gets proper response from the pod, it distributes the load to that pod. Until that, it would wait.
 ##### Deploying to Kubernetes
 - As usual, we can use `kubectl apply -f deployment.yaml` to deploy.
+---
+#### Microservices and Kubernetes Service Discovery
+##### How Currency Conversion is able to call Currency Exchange service ?
+- In Currency Conversion code, we have configured Environment Variables like ***CURRENCY_EXCHANGE_URI***. From this, it is able to pick up the URL of the other service.
+##### :thinking: But we didn't configure this Environment Variable anywhere :thinking:
+- ***In Kubernetes***, when any pod is starting up, ***it gets Environment Variables based on whatever services are up and running at that point in time***.
+- So, when *Currency Conversion* service is deployed, the pods will come up.
+- At that point in time, we will have *Currency Exchange* service up and running.
+- So, the *Environment Variables of Currency Exchange* service ***will be pre-populated*** in Currency Conversion service.
+- *We can use these Environment Variables to find another service*.
+##### 2 ways of Service Discovery in Kubernetes
+1. Defining ***Environment Variables*** in YAML files and using it in code.
+2. Defining ***Spring Profiles*** and using application.properties according to the *Spring Profile*.
+##### Example: 
+```
+- name: SPRING_PROFILES_ACTIVE
+  value: kubernetes
+```
+Using `application-kubernetes.properties` file.
+### 😉  In Kubernetes, Load Balancing, Service Discovery and Centralized Configuration are FREE  😉
+---
+#### Using Kubernetes Ingress to Simplify Microservice Access
+- So far, we deployed 2 Microservices to Kubernetes.
+- We ***deployed them as Load Balancer***.
+- What if we have 100 or 1000 Microservices ? We cannot deploy that many number of Microservices as Load Balancer.
+- Because, running ***so many Load Balancers*** would ***cost huge amount of money***.
+- To overcome this, we can have ***1 Highly Available Load Balancer*** which can take all the requests from all microservices.
+- ***Ingress*** allows us to have 1 Load Balancer and from that we can ***route requests to the respective microservices***.
+- Refer *ingress.yaml* file in Currency Conversion service for code.
+- We can deploy using `kubectl apply -f ingress.yaml`
+#####  Command to view ingress
+```
+kubectl get Ingress
+```
+> Now we deployed an Ingress.
+> Hereafter we need not access the services with ***{External-IP of service}:{Port of service}/End point URL***.
+> We can directly use ***{Ingress-IP}/End point URL to access all the microservices***.
