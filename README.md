@@ -1125,3 +1125,46 @@ kubectl get Ingress
 > Now we deployed an Ingress.
 > Hereafter we need not access the services with ***{External-IP of service}:{Port of service}/End point URL***.
 > We can directly use ***{Ingress-IP}/End point URL to access all the microservices***.
+---
+Integrating Java Spring Cloud Kubernetes with Spring Boot Microservices
+-
+- We have a new Currency Conversion service which has few features of Spring Cloud such as
+	+ ***Netflix Ribbon*** - For Load balancing
+	+ ***Spring Cloud Starter Kubernetes*** - Can use few features by integrating this Spring Boot application with Kubernetes.
+	+ ***@EnableDiscoveryClient*** - Can be integrated directly to Kubernetes Discovery System
+- We have built a jar, created image for this service and pushed to [Docker Hub](https://hub.docker.com/)
+- As usual, we can use  `kubectl apply -f deployment.yaml`  to deploy.
+- We will get an error because the ribbon client won't be able to access the end points.
+- We have given access in *rbac.yaml file*.
+- we can use `kubectl apply -f 02-rbac.yaml` to deploy.
+- After this, the new Currency Conversion service will start working.
+#### Using Spring Cloud Kubernetes Config to load ConfigMaps
+- In Todo Web Application using MySQL, we created a ConfigMap and mapped each value in the YAML file.
+- By using *Spring Cloud Kubernetes Config*, we can ***talk to the Kubernetes ConfigMap, bring all the configuration and use it directly*** in the application.
+* Creating a ***ConfigMap with the name of the application***.
+```
+kubectl create configmap currency-conversion --from-literal=YOUR_PROPERTY=value --from-literal=YOUR_PROPERTY_2=value2
+```
+* To describe
+```
+kubectl describe configmap/currency-conversion
+```
+>- Note: At the time of ***application startup***, it will try to load few property source such as ***ConfigMap, Secrets etc***.
+>- The naming convention is like.. configmap.applicationname (configmap.currency-conversion)
+##### Restarting the application to use the ConfigMap
+- 1 way is to delete the pods so that it will restart again.
+- Another way is to scale down and scale up.
+```
+kubectl scale deployment currency-conversion --replicas=0
+```
+```
+kubectl scale deployment currency-conversion --replicas=2
+```
+- Now, if we observe the logs of the application during startup, the values from ConfigMap will be fetched.
+---
+#### Understanding Auto Scaling approaches with Kubernetes
+- In Kubernetes, Auto Scaling is supported at multiple levels
+	+ Cluster Auto Scaling (***Node*** Auto Scaling)
+	+ Pod Auto Scaling (***Horizontal*** Pod Auto Scaling)
+	+ Pod Auto Scaling (***Vertical*** Pod Auto Scaling)
+		* Increasing number of resources available for a specific pod.
