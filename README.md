@@ -1168,3 +1168,30 @@ kubectl scale deployment currency-conversion --replicas=2
 	+ Pod Auto Scaling (***Horizontal*** Pod Auto Scaling)
 	+ Pod Auto Scaling (***Vertical*** Pod Auto Scaling)
 		* Increasing number of resources available for a specific pod.
+##### Implementing Horizontal Pod Autoscaling with Kubernetes
+- Implementing Horizontal Pod Autoscaling in Currency Exchange Basic Service.
+	+ Modifying the deployment.yaml file (CPU Usage limit and maximum CPU Usage limit).
+	+ `kubectl apply -f deployment.yaml`
+- To check the pods that use maximum CPU/Memory - `kubectl top pods`
+- When we execute `watch -n 0.1 curl http://34.107.198.241/currency-exchange/from/USD/to/INR` and check `kubectl top pods`, we can observe the rise in the CPU Utilization.
+> Command to autoscale:
+```
+kubectl autoscale deployment currency-exchange --min=1 --max=3 --cpu-percent=10
+```
+- `--min=1` - Minimum 1 pod
+- `--max=3` - Maximum 3 pods
+- `--cpu-percent=10` - Autoscaling happens when the CPU Usage is more than 10%
+> Command to see events after autoscaling:
+- `kubectl get events --sort-by=.metadata.creationTimestamp`
+> Command to see Horizontal Pod Autoscaler
+- `kubectl get hpa`
+> Command to ***see list of HPAs***
+- `kubectl get hpa -o yaml`
+> Command to ***export HPA***
+- `kubectl get hpa -o yaml > 01-hpa.yaml`
+> Command to ***export specific HPA***
+- `kubectl get hpa currency-exchange -o yaml > 01-hpa.yaml`
+---
+
+#### Deleting Your Kubernetes Cluster
+> Google Cloud Console UI -> Kubernetes Engine -> Clusters -> Select Cluster -> Menu (3 dots) -> Delete :wink:
