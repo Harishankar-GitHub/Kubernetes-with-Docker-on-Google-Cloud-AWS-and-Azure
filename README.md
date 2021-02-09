@@ -1195,3 +1195,48 @@ kubectl autoscale deployment currency-exchange --min=1 --max=3 --cpu-percent=10
 
 #### Deleting Your Kubernetes Cluster
 > Google Cloud Console UI -> Kubernetes Engine -> Clusters -> Select Cluster -> Menu (3 dots) -> Delete :wink:
+---
+
+Integrating Spring Boot Microservices - Kubernetes with Google Stackdriver
+-
+- To implement this, we create a new Cluster.
+- GCP Console -> Kubernetes Engine -> Clusters -> Create new Cluster
+- Give a name and enable StackDriver (It is enabled by default in Clusters -> Features -> Operations.
+- Default pool -> Size -> Number of nodes -> 2 is enough.
+- Click Create.
+##### To reduce the nodes to 0 and back to 2
+```	
+gcloud container clusters resize --zone us-central1-c harish-cluster-stackdriver --num-nodes=0
+```
+```
+gcloud container clusters resize --zone us-central1-c harish-cluster-stackdriver --num-nodes=2
+```
+
+#### Information about services
+- We have ***Currency Exchange Stackdriver*** and ***Currency Conversion Stackdriver*** services.
+- We *removed* Spring Cloud Starter Kubernetes dependency and have ***added Spring Cloud GCP Starter Trace and Spring Cloud GCP Starter Logging*** dependencies.
+	+ We have added these 2 dependencies to integrate with Stackdriver and to see the trace and logging.
+- Another change is in ***dockerfile***.
+	+ We have changed the jdk image from ***openjdk:8-jdk-alpine*** to ***openjdk:8***.
+		- This is because, Alpine version of jdk 8 is much smaller and there are few features which Stackdriver makes use of is available in *openjdk:8* and not in Alpine version.
++ Another change in *application.properties* - spring.sleuth.sampler.probability=***1.0*** (To trace all requests).
+	- In production, we usually have value of ***0.1*** so that we are not logging huge data.
++ Another change in*application.properties* - we have disabled Stackdriver - ***spring.cloud.gcp.trace.enabled=false. Why ?***
+	- Because, in local, if we keep it enabled, it will try to connect to the Google Stackdriver and we can't run the application in local.
+	- Then how to enable while deploying to GCP ? ***By using deployment.yaml file***.
+	- So, while running in local, Stackdriver is disabled. While deploying to GCP, we enabled it using *deployment.yaml* file.
++ Another change in *deployment.yaml*
+	- We pass an environment variable ***SPRING_CLOUD_GCP_TRACE_ENABLED as true***.
+
++ After this, we built images for these 2 services and push it to DockerHub.
+
+##### StackDriver Updates
+> StackDriver is now called [***Operations***](https://cloud.google.com/products/operations)!
+
+> All the stack driver APIs that we are using can now be found in the main dashboard of GCP instead of going to "Stackdriver".
+
+> We can find stack driver APIs without the "Stackdriver" suffix in the "Products" section of the hamburger menu on the left side of your GCP console.
+
+-   Stackdriver Trace is called ***Trace***
+-   Stackdriver homepage is now just ***Monitoring***
+-   Stackdrivers logging is now just ***Logging***
