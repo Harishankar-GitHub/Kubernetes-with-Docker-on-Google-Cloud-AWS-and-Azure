@@ -69,7 +69,7 @@ gcloud container clusters get-credentials harish-cluster --zone us-central1-a --
 By using the above command, we are connected to the cluster.
 To execute commands against this cluster, we use kubectl commands.
 
-> kubectl - Kube Controller
+> kubectl -> Kube Controller
 
 * **kubectl** is an awesome Kubernetes Command to interact with the cluster.
 * **kubectl** would work with any Kubernetes Cluster irrespective of whether the cluster is in Local Machine or in any Data Center or in any Cloud.
@@ -171,7 +171,7 @@ As a combination, they provide the important responsibilities of Kubernetes whic
 Understanding Pods in Kubernetes:
 -
 - To see the IP Address and other details of the pod: kubectl get pods -o wide
--o wide will add few more details to the kubectl get pods command.
+- -o wide will add few more details to the kubectl get pods command.
 
 * Within the same pod, the containers can talk to each other using localhost.
 
@@ -1240,3 +1240,13 @@ gcloud container clusters resize --zone us-central1-c harish-cluster-stackdriver
 -   Stackdriver Trace is called ***Trace***
 -   Stackdriver homepage is now just ***Monitoring***
 -   Stackdrivers logging is now just ***Logging***
+
+##### Enabling Stackdriver APIs for Your Google Cloud Account
+- GCP Console -> Search -> APIs & Services -> Enable APIs & Services -> Search for Stackdriver.
+- Enable all the APIs related to Stackdriver.
+##### Deploying Spring Boot Microservices to explore Google Stackdriver
+We deploy both the services using
+```
+kubectl apply -f deployment.yaml
+```
+- We can explore APIs and Services, Monitoring, Logging, Trace, Error Reporting.
