@@ -1250,3 +1250,27 @@ We deploy both the services using
 kubectl apply -f deployment.yaml
 ```
 - We can explore APIs and Services, Monitoring, Logging, Trace, Error Reporting.
+
+Integrating Java Spring Boot Microservices on Kubernetes with Istio
+-
+- Istio is a Service Mesh.
+##### Creating a Cluster to explore Istio
+- Google Cloud Console -> Inside My First Project -> Kubernetes Engine -> Cluster -> **Create Cluster**
+- Give a **name**.
+- Default Pool -> No. of Nodes -> **2**
+- Machine Configuration -> Machine family -> General Purpose -> **N2 Series**
+- **Create**
+##### Local Set up
+- We have 2 applications:
+	- *09-currency-exchange-microservice-istio*
+	- *10-currency-conversion-microservice-istio*
+##### Understanding Service Mesh, Istio and Sidecar Pattern
+- Let's say we have a container inside a pod.
+- Service Mesh is another container that takes care of all the common features that are needed by all the microservices.
+- All the requests will be routed through the 2nd container (Service Mesh).
+- **Istio** is one of the most popular **Service Mesh Implementation**.
+- The **Service Mesh container** is also called **Sidecar**.
+##### Installing Istio on Kubernetes Cluster - CRD and Istio Components
+- Connecting to the Istio Cluster from Cloud Shell
+- **Setting up Istio:** Refer readme.md file inside *09-currency-exchange-microservice-istio* application.
+- 
