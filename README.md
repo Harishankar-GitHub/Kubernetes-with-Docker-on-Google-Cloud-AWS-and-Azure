@@ -1274,3 +1274,9 @@ Integrating Java Spring Boot Microservices on Kubernetes with Istio
 - Connecting to the Istio Cluster from Cloud Shell
 - **Setting up Istio:** Refer readme.md file inside *09-currency-exchange-microservice-istio* application.
 - 
+
+## Attribution
+
+This repository contains my notes and practice code from the *Kubernetes with Docker on Google Cloud, AWS & Azure* course by [in28minutes](https://www.in28minutes.com) (Ranga Karanam). The original course material, including its example code, belongs to its author.
+
+The [MIT license](LICENSE) in this repository applies only to my own notes, changes and additions, not to the original course material.
